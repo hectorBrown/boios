@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.SPC_main = new System.Windows.Forms.SplitContainer();
             this.label3 = new System.Windows.Forms.Label();
             this.TB_cohesion = new System.Windows.Forms.TrackBar();
@@ -36,6 +37,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.TB_alignment = new System.Windows.Forms.TrackBar();
             this.PB_main = new System.Windows.Forms.PictureBox();
+            this.TIM_main = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.SPC_main)).BeginInit();
             this.SPC_main.Panel1.SuspendLayout();
             this.SPC_main.Panel2.SuspendLayout();
@@ -131,6 +133,13 @@
             this.PB_main.Size = new System.Drawing.Size(530, 450);
             this.PB_main.TabIndex = 0;
             this.PB_main.TabStop = false;
+            this.PB_main.Paint += new System.Windows.Forms.PaintEventHandler(this.PB_main_Paint);
+            // 
+            // TIM_main
+            // 
+            this.TIM_main.Enabled = true;
+            this.TIM_main.Interval = 10;
+            this.TIM_main.Tick += new System.EventHandler(this.TIM_main_Tick);
             // 
             // FRM_main
             // 
@@ -163,6 +172,7 @@
         private System.Windows.Forms.TrackBar TB_cohesion;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TrackBar TB_seperation;
+        private System.Windows.Forms.Timer TIM_main;
     }
 }
 
