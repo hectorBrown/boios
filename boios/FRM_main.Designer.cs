@@ -29,21 +29,21 @@
         private void InitializeComponent()
         {
             this.SPC_main = new System.Windows.Forms.SplitContainer();
+            this.label3 = new System.Windows.Forms.Label();
+            this.TB_cohesion = new System.Windows.Forms.TrackBar();
+            this.label2 = new System.Windows.Forms.Label();
+            this.TB_seperation = new System.Windows.Forms.TrackBar();
             this.label1 = new System.Windows.Forms.Label();
             this.TB_alignment = new System.Windows.Forms.TrackBar();
             this.PB_main = new System.Windows.Forms.PictureBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.TB_seperation = new System.Windows.Forms.TrackBar();
-            this.label3 = new System.Windows.Forms.Label();
-            this.TB_cohesion = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(this.SPC_main)).BeginInit();
             this.SPC_main.Panel1.SuspendLayout();
             this.SPC_main.Panel2.SuspendLayout();
             this.SPC_main.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TB_cohesion)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TB_seperation)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TB_alignment)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PB_main)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TB_seperation)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TB_cohesion)).BeginInit();
             this.SuspendLayout();
             // 
             // SPC_main
@@ -68,31 +68,23 @@
             this.SPC_main.SplitterDistance = 266;
             this.SPC_main.TabIndex = 1;
             // 
-            // label1
+            // label3
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Alignment";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(13, 111);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(51, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Cohesion";
             // 
-            // TB_alignment
+            // TB_cohesion
             // 
-            this.TB_alignment.Location = new System.Drawing.Point(12, 25);
-            this.TB_alignment.Name = "TB_alignment";
-            this.TB_alignment.Size = new System.Drawing.Size(251, 45);
-            this.TB_alignment.TabIndex = 1;
-            // 
-            // PB_main
-            // 
-            this.PB_main.BackColor = System.Drawing.Color.Black;
-            this.PB_main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PB_main.Location = new System.Drawing.Point(0, 0);
-            this.PB_main.Name = "PB_main";
-            this.PB_main.Size = new System.Drawing.Size(530, 450);
-            this.PB_main.TabIndex = 0;
-            this.PB_main.TabStop = false;
+            this.TB_cohesion.Location = new System.Drawing.Point(13, 127);
+            this.TB_cohesion.Maximum = 100;
+            this.TB_cohesion.Name = "TB_cohesion";
+            this.TB_cohesion.Size = new System.Drawing.Size(251, 45);
+            this.TB_cohesion.TabIndex = 6;
+            this.TB_cohesion.Scroll += new System.EventHandler(this.TB_cohesion_Scroll);
             // 
             // label2
             // 
@@ -106,43 +98,58 @@
             // TB_seperation
             // 
             this.TB_seperation.Location = new System.Drawing.Point(12, 76);
+            this.TB_seperation.Maximum = 100;
             this.TB_seperation.Name = "TB_seperation";
             this.TB_seperation.Size = new System.Drawing.Size(251, 45);
             this.TB_seperation.TabIndex = 4;
+            this.TB_seperation.Scroll += new System.EventHandler(this.TB_seperation_Scroll);
             // 
-            // label3
+            // label1
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 111);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(51, 13);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "Cohesion";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(53, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Alignment";
             // 
-            // TB_cohesion
+            // TB_alignment
             // 
-            this.TB_cohesion.Location = new System.Drawing.Point(13, 127);
-            this.TB_cohesion.Name = "TB_cohesion";
-            this.TB_cohesion.Size = new System.Drawing.Size(251, 45);
-            this.TB_cohesion.TabIndex = 6;
+            this.TB_alignment.Location = new System.Drawing.Point(12, 25);
+            this.TB_alignment.Maximum = 100;
+            this.TB_alignment.Name = "TB_alignment";
+            this.TB_alignment.Size = new System.Drawing.Size(251, 45);
+            this.TB_alignment.TabIndex = 1;
+            this.TB_alignment.Scroll += new System.EventHandler(this.TB_alignment_Scroll);
             // 
-            // Form1
+            // PB_main
+            // 
+            this.PB_main.BackColor = System.Drawing.Color.Black;
+            this.PB_main.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PB_main.Location = new System.Drawing.Point(0, 0);
+            this.PB_main.Name = "PB_main";
+            this.PB_main.Size = new System.Drawing.Size(530, 450);
+            this.PB_main.TabIndex = 0;
+            this.PB_main.TabStop = false;
+            // 
+            // FRM_main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.SPC_main);
-            this.Name = "Form1";
+            this.Name = "FRM_main";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.FRM_main_Load);
             this.SPC_main.Panel1.ResumeLayout(false);
             this.SPC_main.Panel1.PerformLayout();
             this.SPC_main.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.SPC_main)).EndInit();
             this.SPC_main.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.TB_cohesion)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TB_seperation)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.TB_alignment)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PB_main)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TB_seperation)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TB_cohesion)).EndInit();
             this.ResumeLayout(false);
 
         }
