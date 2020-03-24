@@ -148,7 +148,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.SPC_main);
             this.Name = "FRM_main";
-            this.Text = "Form1";
+            this.Text = "Boios";
             this.Load += new System.EventHandler(this.FRM_main_Load);
             this.SPC_main.Panel1.ResumeLayout(false);
             this.SPC_main.Panel1.PerformLayout();
