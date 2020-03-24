@@ -33,11 +33,10 @@ namespace boios
         private void PB_main_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             foreach (Boio boio in boios)
             {
-                Tuple<Color, PointF[]> triangleInfo;
-                triangleInfo = boio.GetDrawing();
-                g.FillPolygon(new SolidBrush(triangleInfo.Item1), triangleInfo.Item2);
+                boio.GetDrawing(ref g);
             }
         }
 
@@ -45,7 +44,7 @@ namespace boios
         {
             foreach (Boio boio in boios)
             {
-                boio.Step(alignment, seperation, cohesion);
+                boio.Step(alignment, seperation, cohesion, boios.ToArray());
             }
             PB_main.Refresh();
         }
@@ -54,7 +53,7 @@ namespace boios
         {
             alignment = 0; cohesion = 0; seperation = 0;
             boios = new List<Boio>();
-            boios.Add(new Boio(Color.Red, 0, new PointF(PB_main.Width / 2, PB_main.Height / 2), 0.3f));
+            boios.Add(new Boio(Color.Red, Convert.ToSingle(Math.PI), new PointF(PB_main.Width / 2, PB_main.Height / 2), 0.3f));
         }
 
         public FRM_main()
@@ -64,7 +63,7 @@ namespace boios
     }
     public class Boio
     {
-        private static readonly float TRIANGLEWIDTH = 6, TRIANGLEHEIGHT = 15, TRIANGLERATIO = 0.7f;
+        private static readonly float TRIANGLEWIDTH = 6, TRIANGLEHEIGHT = 15, TRIANGLERATIO = 0.7f, OCCLUDE = 100, AVOID = 10;
         private float direction, speed;
         private PointF position;
         private Color color;
@@ -73,7 +72,7 @@ namespace boios
         {
             color = _color; direction = _direction; position = _position; speed = _speed;
         }
-        public Tuple<Color, PointF[]> GetDrawing()
+        public void GetDrawing(ref Graphics g)
         {
             PointF[] trianglePoints = new PointF[3];
             PointF triangleBaseCenter;
@@ -81,10 +80,35 @@ namespace boios
             triangleBaseCenter = GetPointRelativeTo(position, direction + Convert.ToSingle(Math.PI), (1 - TRIANGLERATIO) * TRIANGLEHEIGHT);
             trianglePoints[1] = GetPointRelativeTo(triangleBaseCenter, direction - Convert.ToSingle(Math.PI / 2), TRIANGLEWIDTH / 2);
             trianglePoints[2] = GetPointRelativeTo(triangleBaseCenter, direction + Convert.ToSingle(Math.PI / 2), TRIANGLEWIDTH / 2);
-            return new Tuple<Color, PointF[]>(color, trianglePoints);
+            g.FillPolygon(new SolidBrush(color), trianglePoints);
         }
-        public void Step(int alignment, int seperation, int cohesion)
+        public void Step(int alignment, int seperation, int cohesion, Boio[] others) 
         {
+            Random rng = new Random();
+            PointF avgPos1, avgPos2, avgPos3;
+            float sumX = 0, sumY = 0, directionSum = 0;
+            float avoidSumX = 0, avoidSumY = 0;
+            int counter = 0;
+            int avoidCounter = 0;
+            foreach (Boio boio in others)
+            {
+                if (GetDistanceTo(boio.GetPosition()) < OCCLUDE && GetDistanceTo(boio.GetPosition()) != 0)
+                {
+                    if (GetDistanceTo(boio.GetPosition()) < AVOID)
+                    {
+                        avoidSumX += -GetVectorTo(boio.position).X;
+                        avoidSumY += -GetVectorTo(boio.position).Y;
+                        avoidCounter++;
+                    }
+                    sumX += boio.GetPosition().X; sumY += boio.GetPosition().Y;
+                    directionSum += boio.GetDirection();
+                    counter++;
+                }
+            }
+            avgPos1 = new PointF(sumX / counter, sumY / counter);
+            avgPos2 = GetPointRelativeTo(position, directionSum / counter, OCCLUDE);
+            avgPos3 = new PointF(avoidSumX / avoidCounter, avoidSumY / avoidCounter);
+
             PointF newPosition = GetPointRelativeTo(position, direction, speed);
             position = newPosition;
         }
@@ -99,19 +123,24 @@ namespace boios
             {
                 direction += Convert.ToSingle(2 * Math.PI);
             }
-            if (direction == 0) { result = new PointF(O.X, O.Y - distance); }
-            else if (direction > 0 && direction < Math.PI / 2) { result = new PointF(O.X + distance * Convert.ToSingle(Math.Sin(direction)), 
-                O.Y - distance * Convert.ToSingle(Math.Cos(direction))); }
-            else if (direction == Math.PI / 2) { result = new PointF(O.X + direction, O.Y); }
-            else if (direction > Math.PI / 2 && direction < Math.PI ) { result = new PointF(O.X + distance * Convert.ToSingle(Math.Cos(direction - Math.PI / 2)),
-                O.Y + Convert.ToSingle(Math.Sin(direction - Math.PI / 2))); }
-            else if (direction == Math.PI) { result = new PointF(O.X, O.Y + distance); }
-            else if (direction > Math.PI && direction < (3 * Math.PI) / 2) { result = new PointF(O.X + distance * Convert.ToSingle(Math.Sin(direction - Math.PI)),
-                O.Y + distance * Convert.ToSingle(Math.Cos(direction - Math.PI))); }
-            else if (direction == (3 * Math.PI) / 2) { result = new PointF(O.X - direction, O.Y); }
-            else { result = new PointF(O.X - direction * Convert.ToSingle(Math.Cos(direction - (3 * Math.PI) / 2)),
-             O.Y - direction * Convert.ToSingle(Math.Sin(direction - (3 * Math.PI) / 2))); }
+            result = new PointF(O.X + distance * Convert.ToSingle(Math.Sin(direction)), O.Y + distance * Convert.ToSingle(Math.Cos(direction)));
             return result;
+        }
+        private float GetDistanceTo(PointF p)
+        {
+            return Convert.ToSingle(Math.Sqrt(Math.Pow(p.X - position.X, 2) + Math.Pow(p.Y - position.Y, 2))); 
+        }
+        private PointF GetVectorTo(PointF p)
+        {
+            return new PointF(p.X - position.X, p.Y - position.Y);
+        }
+        public PointF GetPosition()
+        {
+            return position;
+        }
+        public float GetDirection()
+        {
+            return direction;
         }
     }
 }
