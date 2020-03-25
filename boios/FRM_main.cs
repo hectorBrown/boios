@@ -14,6 +14,7 @@ namespace boios
     {
         private int alignment, cohesion, seperation;
         List<Boio> boios;
+        Random rng;
 
         private void TB_alignment_Scroll(object sender, EventArgs e)
         {
@@ -44,16 +45,20 @@ namespace boios
         {
             foreach (Boio boio in boios)
             {
-                boio.Step(alignment, seperation, cohesion, boios.ToArray());
+                boio.Step(alignment, seperation, cohesion, boios.ToArray(), ref rng);
             }
             PB_main.Refresh();
         }
 
         private void FRM_main_Load(object sender, EventArgs e)
         {
-            alignment = 0; cohesion = 0; seperation = 0;
+            alignment = 1; cohesion = 1; seperation = 1;
             boios = new List<Boio>();
-            boios.Add(new Boio(Color.Red, Convert.ToSingle(Math.PI), new PointF(PB_main.Width / 2, PB_main.Height / 2), 0.3f));
+            for (int i = 0; i < 50; i++)
+            {
+                boios.Add(new Boio(Color.Red, Convert.ToSingle(Math.PI), new PointF(PB_main.Width / 2, PB_main.Height / 2), 0.3f));
+            }
+            rng = new Random();
         }
 
         public FRM_main()
@@ -82,14 +87,15 @@ namespace boios
             trianglePoints[2] = GetPointRelativeTo(triangleBaseCenter, direction + Convert.ToSingle(Math.PI / 2), TRIANGLEWIDTH / 2);
             g.FillPolygon(new SolidBrush(color), trianglePoints);
         }
-        public void Step(int alignment, int seperation, int cohesion, Boio[] others) 
+        public void Step(int alignment, int seperation, int cohesion, Boio[] others, ref Random rng) 
         {
-            Random rng = new Random();
             PointF avgPos1, avgPos2, avgPos3;
             float sumX = 0, sumY = 0, directionSum = 0;
             float avoidSumX = 0, avoidSumY = 0;
             int counter = 0;
             int avoidCounter = 0;
+            float targetX, targetY;
+            PointF target;
             foreach (Boio boio in others)
             {
                 if (GetDistanceTo(boio.GetPosition()) < OCCLUDE && GetDistanceTo(boio.GetPosition()) != 0)
@@ -108,7 +114,9 @@ namespace boios
             avgPos1 = new PointF(sumX / counter, sumY / counter);
             avgPos2 = GetPointRelativeTo(position, directionSum / counter, OCCLUDE);
             avgPos3 = new PointF(avoidSumX / avoidCounter, avoidSumY / avoidCounter);
-
+            targetX = (avgPos1.X * cohesion + avgPos2.X * alignment + avgPos3.X * seperation) / (alignment + seperation + cohesion);
+            targetY = (avgPos1.Y * cohesion + avgPos2.Y * alignment + avgPos3.Y * seperation) / (alignment + seperation + cohesion);
+            target = new PointF(targetX, targetY);
             PointF newPosition = GetPointRelativeTo(position, direction, speed);
             position = newPosition;
         }
@@ -125,6 +133,10 @@ namespace boios
             }
             result = new PointF(O.X + distance * Convert.ToSingle(Math.Sin(direction)), O.Y + distance * Convert.ToSingle(Math.Cos(direction)));
             return result;
+        }
+        private float GetDirectionTo(PointF p)
+        {
+            
         }
         private float GetDistanceTo(PointF p)
         {

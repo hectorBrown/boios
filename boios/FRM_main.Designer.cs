@@ -83,9 +83,11 @@
             // 
             this.TB_cohesion.Location = new System.Drawing.Point(13, 127);
             this.TB_cohesion.Maximum = 100;
+            this.TB_cohesion.Minimum = 1;
             this.TB_cohesion.Name = "TB_cohesion";
             this.TB_cohesion.Size = new System.Drawing.Size(251, 45);
             this.TB_cohesion.TabIndex = 6;
+            this.TB_cohesion.Value = 1;
             this.TB_cohesion.Scroll += new System.EventHandler(this.TB_cohesion_Scroll);
             // 
             // label2
@@ -101,9 +103,11 @@
             // 
             this.TB_seperation.Location = new System.Drawing.Point(12, 76);
             this.TB_seperation.Maximum = 100;
+            this.TB_seperation.Minimum = 1;
             this.TB_seperation.Name = "TB_seperation";
             this.TB_seperation.Size = new System.Drawing.Size(251, 45);
             this.TB_seperation.TabIndex = 4;
+            this.TB_seperation.Value = 1;
             this.TB_seperation.Scroll += new System.EventHandler(this.TB_seperation_Scroll);
             // 
             // label1
@@ -119,9 +123,11 @@
             // 
             this.TB_alignment.Location = new System.Drawing.Point(12, 25);
             this.TB_alignment.Maximum = 100;
+            this.TB_alignment.Minimum = 1;
             this.TB_alignment.Name = "TB_alignment";
             this.TB_alignment.Size = new System.Drawing.Size(251, 45);
             this.TB_alignment.TabIndex = 1;
+            this.TB_alignment.Value = 1;
             this.TB_alignment.Scroll += new System.EventHandler(this.TB_alignment_Scroll);
             // 
             // PB_main
