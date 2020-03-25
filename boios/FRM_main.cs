@@ -54,11 +54,11 @@ namespace boios
         {
             alignment = 1; cohesion = 1; seperation = 1;
             boios = new List<Boio>();
+            rng = new Random();
             for (int i = 0; i < 50; i++)
             {
-                boios.Add(new Boio(Color.Red, Convert.ToSingle(Math.PI), new PointF(PB_main.Width / 2, PB_main.Height / 2), 0.3f));
+                boios.Add(new Boio(Color.Red, Convert.ToSingle(Math.PI), new PointF(rng.Next(0, PB_main.Width), rng.Next(0, PB_main.Height / 2)), 0.3f));
             }
-            rng = new Random();
         }
 
         public FRM_main()
@@ -96,6 +96,8 @@ namespace boios
             int avoidCounter = 0;
             float targetX, targetY;
             PointF target;
+            float bearing;
+            float bearingDisparity;
             foreach (Boio boio in others)
             {
                 if (GetDistanceTo(boio.GetPosition()) < OCCLUDE && GetDistanceTo(boio.GetPosition()) != 0)
@@ -117,6 +119,14 @@ namespace boios
             targetX = (avgPos1.X * cohesion + avgPos2.X * alignment + avgPos3.X * seperation) / (alignment + seperation + cohesion);
             targetY = (avgPos1.Y * cohesion + avgPos2.Y * alignment + avgPos3.Y * seperation) / (alignment + seperation + cohesion);
             target = new PointF(targetX, targetY);
+
+            bearing = GetDirectionTo(target);
+            bearingDisparity = bearing - direction;
+            if (bearingDisparity > Convert.ToSingle(Math.PI)) { bearing = -Convert.ToSingle(2 * Math.PI) - bearing; }
+            if (bearingDisparity < Convert.ToSingle(-Math.PI)) { bearing = Convert.ToSingle(2 * Math.PI) + bearing; }
+
+            direction += Convert.ToSingle(Math.Sin(bearing));
+            
             PointF newPosition = GetPointRelativeTo(position, direction, speed);
             position = newPosition;
         }
@@ -129,14 +139,32 @@ namespace boios
             }
             while (direction < 0)
             {
-                direction += Convert.ToSingle(2 * Math.PI);
+               direction += Convert.ToSingle(2 * Math.PI);
             }
             result = new PointF(O.X + distance * Convert.ToSingle(Math.Sin(direction)), O.Y + distance * Convert.ToSingle(Math.Cos(direction)));
             return result;
         }
         private float GetDirectionTo(PointF p)
         {
-            
+            float angleOutput;
+            PointF direction = new PointF(p.X - position.X, p.Y - position.Y);
+            if (direction.X > 0 && direction.Y > 0)
+            {
+                angleOutput = Convert.ToSingle(Math.Atan2(direction.X, direction.Y)); 
+            }
+            else if (direction.X > 0 && direction.Y < 0)
+            {
+                angleOutput = Convert.ToSingle(Math.PI - Math.Atan2(direction.X, Math.Abs(direction.Y)));
+            }
+            else if (direction.X < 0 && direction.Y < 0)
+            {
+                angleOutput = Convert.ToSingle(Math.PI + Math.Atan2(Math.Abs(direction.X), Math.Abs(direction.Y)));
+            }
+            else
+            {
+                angleOutput = Convert.ToSingle((2 * Math.PI) - Math.Atan2(Math.Abs(direction.X), direction.Y));
+            }
+            return angleOutput;
         }
         private float GetDistanceTo(PointF p)
         {
